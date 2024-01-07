@@ -133,7 +133,7 @@ const VerifyProductPage: React.FC = () => {
                     <div className="form-group">
                         <label htmlFor="productSN">Product SN:</label>
                         <input
-                            disabled
+                            // disabled
                             type="text"
                             className="form-control"
                             id="productSN"
