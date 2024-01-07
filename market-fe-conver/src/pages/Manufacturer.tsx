@@ -76,7 +76,10 @@ const ManufacturerPage: React.FC = () => {
                                         <Link to="/addProductPage" className="nav-link">Add Product</Link>
                                     </li>
                                     <li className="nav-item">
-                                        <Link to="/productToSellerPage" className="nav-link">Sell Product to Seller</Link>
+                                        <Link to="/addSellerPage" className="nav-link">Add Seller</Link>
+                                    </li>
+                                    <li className="nav-item">
+                                        <Link to="/sellProductToSellerPage" className="nav-link">Sell Product to Seller</Link>
                                     </li>
                                     <li className="nav-item">
                                         <Link to="/querySellerPage" className="nav-link">Query Seller</Link>

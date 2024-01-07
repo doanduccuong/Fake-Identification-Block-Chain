@@ -1,8 +1,97 @@
+import { ethers } from 'ethers';
 import React from 'react';
 import { Link } from 'react-router-dom';
+import * as typechain from "identification-product-cuongdd1";
+
+const systemContract = "0xA9466E7C1ad8165968d104a8190AFc23F0C021fa";
 
 class QuerySellerPage extends React.Component {
   render() {
+    async function querrySeller(): Promise<void> {
+      const web3provider = new ethers.providers.Web3Provider(
+        window.ethereum as any
+      );
+
+
+      const system = typechain.Product__factory.connect(
+        systemContract
+      );
+      const manufacturerCode = document.getElementById('manufacturerCode') as HTMLInputElement | null;
+      let account = await (web3provider as any).getSigner();
+
+      try {
+        let result = await system.connect(await (web3provider as any).getSigner()).querySellersList(
+          ethers.utils.formatBytes32String(manufacturerCode.value),
+        );
+        var sellerId = [];
+        var sellerName = [];
+        var sellerBrand = [];
+        var sellerCode = [];
+        var sellerNum = [];
+        var sellerManager = [];
+        var sellerAddress = [];
+        // console.log(result);
+
+        for (var k = 0; k < result[0].length; k++) {
+          sellerId[k] = result[0][k];
+          console.log(sellerId);
+        }
+
+        for (var k = 0; k < result[1].length; k++) {
+          sellerName[k] = ethers.utils.parseBytes32String(result[1][k]);
+
+        }
+
+        for (var k = 0; k < result[2].length; k++) {
+          sellerBrand[k] = ethers.utils.parseBytes32String(result[2][k]);
+        }
+
+        for (var k = 0; k < result[3].length; k++) {
+          sellerCode[k] = ethers.utils.parseBytes32String(result[3][k]);
+        }
+
+        for (var k = 0; k < result[4].length; k++) {
+          sellerNum[k] = result[4][k];
+        }
+
+        for (var k = 0; k < result[5].length; k++) {
+          sellerManager[k] = ethers.utils.parseBytes32String(result[5][k]);
+        }
+
+        for (var k = 0; k < result[6].length; k++) {
+          sellerAddress[k] = ethers.utils.parseBytes32String(result[6][k]);
+        }
+
+
+        var t = "";
+        document.getElementById('logdata').innerHTML = t;
+        for (var i = 0; i < result[0].length; i++) {
+          var temptr = "<td>" + sellerNum[i] + "</td>";
+          if (temptr === "<td>0</td>") {
+            break;
+          }
+          var tr = "<tr>";
+          tr += "<td>" + sellerId[i] + "</td>";
+          tr += "<td>" + sellerName[i] + "</td>";
+          tr += "<td>" + sellerBrand[i] + "</td>";
+          tr += "<td>" + sellerCode[i] + "</td>";
+          tr += "<td>" + sellerNum[i] + "</td>";
+          tr += "<td>" + sellerManager[i] + "</td>";
+          tr += "<td>" + sellerAddress[i] + "</td>";
+          tr += "</tr>";
+          t += tr;
+
+        }
+        document.getElementById('logdata').innerHTML += t;
+        document.getElementById('add').innerHTML = account.getAddress();
+
+      } catch (error) {
+        console.log(error);
+      }
+
+
+    }
+
     return (
       <>
         <head>
@@ -84,7 +173,7 @@ class QuerySellerPage extends React.Component {
                 <label htmlFor="email">Manufacturer Code</label>
                 <input type="email" className="form-control" id="manufacturerCode" placeholder="Enter manufacturer Code" name="manufacturerCode" />
               </div>
-              <button type="submit" className="btn btn-warning btn-register" id="register">
+              <button type="submit" className="btn btn-warning btn-register" id="register" onClick={querrySeller}>
                 Get Sellers
               </button>
             </div>

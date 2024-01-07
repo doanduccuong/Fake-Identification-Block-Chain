@@ -22,7 +22,6 @@ const AddProductPage: React.FC = () => {
         const web3provider = new ethers.providers.Web3Provider(
             window.ethereum as any
         );
-        console.log(web3provider);
 
 
         const system = typechain.Product__factory.connect(
@@ -37,13 +36,17 @@ const AddProductPage: React.FC = () => {
         const productPrice = document.getElementById('productPrice') as HTMLInputElement | null;
         const productName = document.getElementById('productName') as HTMLInputElement | null;
         const productBrand = document.getElementById('productBrand') as HTMLInputElement | null;
+        console.log(manufacturerID.value);
+        console.log(ethers.utils.arrayify("0x1234"));
+        console.log(ethers.utils.hexlify(textEncoder.encode(manufacturerID.value)));
+        console.log(textEncoder.encode(manufacturerID.value));
        try {
         await system.connect( await (web3provider as any).getSigner() ).addProduct(
-            textEncoder.encode(manufacturerID.value),
-            textEncoder.encode(productName.value),
-            textEncoder.encode(productSN.value),
-            textEncoder.encode(productBrand.value),
-            1,
+            ethers.utils.formatBytes32String(manufacturerID.value),
+            ethers.utils.formatBytes32String(productName.value),
+            ethers.utils.formatBytes32String(productSN.value),
+            ethers.utils.formatBytes32String(productBrand.value),
+            productPrice.value,
         );
        } catch (error) {
         console.log(error);
@@ -51,7 +54,7 @@ const AddProductPage: React.FC = () => {
 
     }
     function fetchQR(){
-		qrValue = (document.getElementById('productSN')) as HTMLInputElement | null;
+		qrValue = ((document.getElementById('productSN')) as HTMLInputElement | null).value;
 		var qrImage = document.querySelector(".qr-code");
 		var qrImageResult = qrImage.querySelector("img");
 		src = qrImageResult.src = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${qrValue}`;
@@ -61,6 +64,7 @@ const AddProductPage: React.FC = () => {
 		downloadQrBtn = document.getElementById('download');
 		downloadQrImg.removeAttribute('hidden');
 		downloadQrBtn.removeAttribute('hidden');
+        addProduct();
 
 	}
     function saveImage(){

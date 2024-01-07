@@ -1,57 +1,49 @@
-import { Html5QrcodeScanner } from 'html5-qrcode';
+// import { Html5QrcodeScanner } from 'html5-qrcode';
+import { ethers } from 'ethers';
 import React, { useEffect } from 'react';
+import { Link } from 'react-router-dom';
+import * as typechain from "identification-product-cuongdd1";
+const systemContract = "0xA9466E7C1ad8165968d104a8190AFc23F0C021fa";
 
 class SellProductSellerPage extends React.Component {
-  componentDidMount() {
-    const decodedText = "Enter Product SN";
-
-    function docReady(fn: () => void) {
-      // see if DOM is already available
-      if (
-        document.readyState === "complete" ||
-        document.readyState === "interactive"
-      ) {
-        // call on the next available tick
-        setTimeout(fn, 1);
-      } else {
-        document.addEventListener("DOMContentLoaded", fn);
-      }
-    }
-
-    docReady(() => {
-        const resultContainer = document.getElementById('qr-reader-results');
-        let lastResult: string | null = null;
-        let countResults = 0;
-
-        function onScanSuccess(decodedText: string, decodedResult: any) {
-            if (decodedText !== lastResult) {
-                ++countResults;
-                lastResult = decodedText;
-                const audio = new Audio('beep.wav');
-                audio.play();
-                resultContainer.innerHTML = decodedText;
-                (document.getElementById('productSN') as HTMLInputElement).value = decodedText;
-            }
-        }
-        function onScanFailure(error) {
-            // handle scan failure, usually better to ignore and keep scanning.
-            // for example:
-            console.warn(`Code scan error = ${error}`);
-          }
-
-        // Assuming you have a global Html5Qrcode object
-        let html5QrcodeScanner = new Html5QrcodeScanner(
-            "reader",
-            { fps: 10, qrbox: {width: 250, height: 250} },
-            /* verbose= */ false);
-          html5QrcodeScanner.render(onScanSuccess, onScanFailure);
-        return () => {
-            // html5QrcodeScanner.stop();
-        };
-    });
-  }
 
   render() {
+    async function sellToSeller(): Promise<void> {
+      const web3provider = new ethers.providers.Web3Provider(
+        window.ethereum as any
+    );
+
+
+    const system = typechain.Product__factory.connect(
+        systemContract
+    );
+    const sellerCode = document.getElementById('sellerCode') as HTMLInputElement | null;
+    const productSN = document.getElementById('productSN') as HTMLInputElement | null;
+    try {
+        await system.connect( await (web3provider as any).getSigner() ).manufacturerSellProduct(
+            ethers.utils.formatBytes32String(productSN.value),
+            ethers.utils.formatBytes32String(sellerCode.value),
+        );
+       } catch (error) {
+        console.log(error);
+       }
+
+    }
+
+    // const html5QrcodeScanner = new Html5QrcodeScanner(
+    //   "reader",
+    //   { fps: 10, qrbox: {width: 250, height: 250} },
+    //   /* verbose= */ false);
+    //   html5QrcodeScanner.render(onScanSuccess, onScanFailure);
+    //   function onScanSuccess(decodedText, decodedResult) {
+    //     console.log(`Code matched = ${decodedText}`, decodedResult);
+    //   }
+
+    //   function onScanFailure(error) {
+    //     console.warn(`Code scan error = ${error}`);
+    //   }
+    
+
     return (
       <html lang="en">
         <head>
@@ -117,7 +109,23 @@ class SellProductSellerPage extends React.Component {
                   className="collapse navbar-collapse"
                   id="ftco-nav"
                 >
-                  <ul className="navbar-nav m-auto">
+                  <div className="collapse navbar-collapse" id="ftco-nav">
+                            <ul className="navbar-nav m-auto">
+                                <li className="nav-item">
+                                    <Link to="/homePage" className="nav-link">HomePage</Link>
+                                </li>
+                                <li className="nav-item">
+                                    <Link to="/manufacturePage" className="nav-link">ManufacturerPage</Link>
+                                </li>
+                                <li className="nav-item">
+                                    <Link to="/sellerPage" className="nav-link">Seller</Link>
+                                </li>
+                                <li className="nav-item">
+                                    <Link to="/consumerPage" className="nav-link">Consumer</Link>
+                                </li>
+                            </ul>
+                        </div>
+                  {/* <ul className="navbar-nav m-auto">
                     <li className="nav-item">
                       <a href="index.html" className="nav-link">
                         Home
@@ -138,7 +146,7 @@ class SellProductSellerPage extends React.Component {
                         Consumer
                       </a>
                     </li>
-                  </ul>
+                  </ul> */}
                 </div>
               </div>
             </nav>
@@ -146,14 +154,14 @@ class SellProductSellerPage extends React.Component {
           <section>
             <div className="container">
               <h2>Sell Product to Seller</h2>
-              <section>
+              {/* <section>
                 <div className="container-fluid">
                   <div>
-                    <div id="qr-reader" style={{ width: '300px' }}></div>
+                    <div id="reader" style={{ width: '300px', color: "Tomato"}}></div>
                     <div id="qr-reader-results"></div>
                   </div>
                 </div>
-              </section>
+              </section> */}
               <div>
                 <table width="100%">
                   <tr>
@@ -162,7 +170,7 @@ class SellProductSellerPage extends React.Component {
                     </td>
                     <td width="30%">
                       <input
-                        disabled
+                        // disabled
                         className="form-control"
                         id="productSN"
                         name="productSN"
@@ -188,19 +196,20 @@ class SellProductSellerPage extends React.Component {
                 type="submit"
                 className="btn btn-warning btn-register"
                 id="register"
+                onClick={sellToSeller}
               >
                 Sell to Seller
               </button>
             </div>
           </section>
-          <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+          {/* <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
           <script src="js/popper.js"></script>
+          <script src="html5-qrcode.min.js"></script>
           <script src="js/bootstrap.min.js"></script>
           <script src="js/main.js"></script>
           <script src="js/web3.min.js"></script>
           <script src="js/truffle-contract.js"></script>
-          <script src="js/sellProductManufacturer.js"></script>
-          <script src="https://unpkg.com/html5-qrcode"></script>
+          <script src="js/sellProductManufacturer.js"></script> */}
           {/* <script>
             var decodedText = "Enter Product SN";
             function docReady(fn) {
@@ -254,3 +263,4 @@ class SellProductSellerPage extends React.Component {
 }
 
 export default SellProductSellerPage;
+

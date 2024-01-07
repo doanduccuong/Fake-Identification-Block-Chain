@@ -2,6 +2,7 @@ import React from 'react';
 // import 'bootstrap/dist/css/bootstrap.min.css';
 // import 'https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css';
 import './css/style.css';
+import { Link } from 'react-router-dom';
 
 const SellerPage: React.FC = () => {
   return (
@@ -42,7 +43,27 @@ const SellerPage: React.FC = () => {
             >
               <span className="fa fa-bars"></span> Menu
             </button>
-            <div className="collapse navbar-collapse" id="ftco-nav">
+            <nav className="navbar navbar-expand-lg navbar-dark ftco_navbar bg-dark ftco-navbar-light" id="ftco-navbar">
+                    <div className="container-fluid">
+                        <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#ftco-nav" aria-controls="ftco-nav" aria-expanded="false" aria-label="Toggle navigation">
+                            <span className="fa fa-bars"></span> Menu
+                        </button>
+                        <div className="collapse navbar-collapse" id="ftco-nav">
+                            <ul className="navbar-nav m-auto">
+                                <li className="nav-item">
+                                    <Link to="/homePage" className="nav-link">HomePage</Link>
+                                </li>
+                                <li className="nav-item">
+                                    <Link to="/sellProductSellerPage" className="nav-link">Sell Product to customer</Link>
+                                </li>
+                                <li className="nav-item">
+                                    <Link to="/queryProductsPage" className="nav-link">Products for Sale</Link>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </nav>
+            {/* <div className="collapse navbar-collapse" id="ftco-nav">
               <ul className="navbar-nav m-auto">
                 <li className="nav-item">
                   <a href="index.html" className="nav-link">
@@ -60,7 +81,7 @@ const SellerPage: React.FC = () => {
                   </a>
                 </li>
               </ul>
-            </div>
+            </div> */}
           </div>
         </nav>
       </header>

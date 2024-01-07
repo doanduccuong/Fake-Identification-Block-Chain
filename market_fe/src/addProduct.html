@@ -139,7 +139,7 @@
 	var src;
 	var qrValue;
 	function fetchQR(){
-		qrValue = document.getElementById('productSN').value;
+		qrValue = (document.getElementById('productSN')).value;
 		qrImage = document.querySelector(".qr-code");
 		qrImageResult = qrImage.querySelector("img");
 		src = qrImageResult.src = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${qrValue}`;
